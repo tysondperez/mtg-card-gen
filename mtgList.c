@@ -111,7 +111,11 @@ int main(int argc, char **argv) {
     }
 
     int cardCount = 0;
-
+    FILE *output = fopen("mtgList.txt", "w");
+    if (output == NULL) {
+        printf("Error opening output file\n");
+        return 1;
+    }
     for (int i = 1; i < argc; i++) {
         FILE *curFile = fopen(argv[i], "r");
         if (curFile == NULL) {
@@ -150,7 +154,7 @@ int main(int argc, char **argv) {
                         cardCount--;
                     }
                     cardCount++;
-                    printf("%s", store);
+                    fprintf(output, "%s", store);
                     removeComma(store, &store);
                     free(store);  // Free the allocated memory after use
                 }
@@ -159,11 +163,12 @@ int main(int argc, char **argv) {
                 token = strtok_r(NULL, ",", &saveptr);
             }
         }
-
         fclose(curFile);
     }
-    printf("%d\n", cardCount);
-
+    printf("Card Count, without basics: %d\n", cardCount);
+    fseek(output, -1, SEEK_CUR);
+    fprintf(output, " ");
+    fclose(output);
     return 0;
 }
 
